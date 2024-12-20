@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import re as regex
 from datetime import datetime
+from tqdm import tqdm
 
 """
 Justificativa para escolha das bibliotecas:
@@ -53,3 +54,68 @@ def extrair_dados_patentes(html):
             })
 
     return cnpj, total_resultados, lista_patentes
+
+def gerar_relatorio(lista_arquivos, diretorio, nome_arquivo_saida="PATENTES.HTML"):
+    html_fim = """
+    <html>
+    <head>
+        <title>Relatorio de Patentes</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+    <div class="container mt-4">
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+    <tr>
+    <th>Arquivo</th>
+    <th>CNPJ</th>
+    <th>RESULTADO</th>
+    <th>NÚMERO DO PEDIDO </th>
+    <th>Data do Depósito</th>
+    <th>Título</th>
+    <th>IPC</th>
+    </tr>
+    </thead>
+    <tbody>
+    """
+
+    for arquivo in tqdm(lista_arquivos, desc="Processando arquivos"):
+        cnpj, total_resultados, patentes = extrair_dados_patentes(f'{diretorio}/{arquivo}')
+        if total_resultados == 0 and not patentes:
+            html_fim += f"""
+            <tr>
+            <td>{arquivo}</td>
+            <td>{cnpj}</td>
+            <td>0</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            </tr>
+            """
+        else:
+            for patente in patentes:
+                html_fim += f"""
+                <tr>
+                <td>{arquivo}</td>
+                <td>{cnpj}</td>
+                <td>{total_resultados}</td>
+                <td>{patente['numero_pedido']}</td>
+                <td>{patente['data_deposito']}</td>
+                <td>{patente['titulo']}</td>
+                <td>{patente['ipc']}</td>
+                </tr>
+                """
+
+    html_fim += """
+    </tbody>
+    </table>
+    </div>
+    </div>
+    </body>
+    </html>
+    """
+
+    with open(nome_arquivo_saida, "w") as arquivo_saida:
+        arquivo_saida.write(html_fim)
