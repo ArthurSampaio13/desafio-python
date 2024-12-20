@@ -119,3 +119,13 @@ def gerar_relatorio(lista_arquivos, diretorio, nome_arquivo_saida="PATENTES.HTML
 
     with open(nome_arquivo_saida, "w") as arquivo_saida:
         arquivo_saida.write(html_fim)
+
+if __name__ == "__main__":
+    arquivos_html = [
+        '00000000000191-01.html', '00001180000126-01.html', 
+        '00003516000190-01.html', '00005275000118-01.html',
+        '00008354000182-01.html', '00011009000106-01.html',
+        '00014522000142-01.html', '00015174000128-01.html',
+        '00020777000118-01.html', '00028986000108-01.html'
+    ]
+    gerar_relatorio(arquivos_html, './PATENTES', 'PATENTES.HTML')
