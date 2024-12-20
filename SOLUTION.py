@@ -18,6 +18,9 @@ Justificativa para escolha das bibliotecas:
 """
 
 def extrair_dados_patentes(html):
+    """
+    Essa função apenas extrai os dados utilizando o BeautifulSoup e regex.
+    """
     with open(html, "r", encoding="latin-1") as arquivo:
         conteudo = BeautifulSoup(arquivo.read(), 'html.parser')
 
@@ -56,6 +59,9 @@ def extrair_dados_patentes(html):
     return cnpj, total_resultados, lista_patentes
 
 def gerar_relatorio(lista_arquivos, diretorio, nome_arquivo_saida="PATENTES.HTML"):
+    """
+    Aqui eu faço a geração do relatório em HTML, optei por utilizar um pouco de Bootstrap para melhorar a visualização e o tqdm para mostrar o progresso.
+    """
     html_fim = """
     <html>
     <head>
